@@ -2,6 +2,8 @@ import argparse
 from html import entities
 import spacy
 import nltk
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
 from utils.textExtractor import textExtractor
 from utils.argParser import argParser
 
@@ -25,10 +27,15 @@ def main():
     #entity recognition -- put all the following functions in a separate class+interface
     nlp = spacy.load("en_core_web_trf")
     authors = []
+    publisher = []
+    isbn = ""
     # nltk.download('averaged_perceptron_tagger')
     for box in ocr_output:
         sentence = box[1]
         print("string", sentence)
+        index = sentence.lower().find('isbn')
+        if ( index != -1):
+            isbn = sentence[index+5:]
         # tokens = nltk.word_tokenize(sentence)
         # tokens = []
         # tokens.append(sentence)
@@ -41,7 +48,22 @@ def main():
         for ent in doc.ents:
             print(ent.text, ent.start_char, ent.end_char, ent.label_)
             if ent.label_ == "PERSON":
-                authors.append(ent.text)
+                #fuzzy search in publisher list
+                match = False
+                file1 = open('publishers.txt', 'r')
+                lines = file1.readlines()
+                for line in lines:
+                    if fuzz.partial_ratio(ent.text, line) >= 90:
+                        publisher.append(ent.text)
+                        ent.label_ = "ORG"
+                        match = True
+                        break
+                    
+                #else
+                if match is False:
+                    authors.append(ent.text)
+            elif ent.label_ == "ORG":
+                publisher.append(ent.text)
 
 
     # full = " ".join([box[1] for box in ocr_output])
@@ -58,18 +80,23 @@ def main():
         y = box[0][2][1]-box[0][1][1]
         area = max(area, x*y)
         #area = max(area, y)
-        if y == area:
+        if x*y == area:
             title = box[1]
     #check for summary bounding box!!!
 
-    print("title", title)
+    print("~~~~~~~~~~~~~~Info extracted~~~~~~~~~~~~~~~")
+
+    print("title:", title)
 
 
     #recognize ISBN number if present
+    print("isbn:", isbn)
+
     #recognize author(s)
     print("author(s):", authors)
 
     #recognize publisher
+    print("publisher:", publisher)
 
     #add in excel sheet
 

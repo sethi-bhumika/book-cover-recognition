@@ -17,5 +17,5 @@ class textExtractor(textExtractorInterface):
     def extract(self, image_path):
         print("Extracting Text...")
         reader = easyocr.Reader(['en'])
-        result = reader.readtext(image_path, paragraph=True)
+        result = reader.readtext(image_path, paragraph=True, x_ths=0.8, contrast_ths=0.5, batch_size=4,  y_ths = 0.6)
         return result
