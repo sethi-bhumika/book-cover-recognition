@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+import cv2
+from pyzbar.pyzbar import decode
 from fuzzywuzzy import fuzz
 import spacy
 import os
@@ -29,8 +31,9 @@ class infoRecognizerInterface(ABC):
 class infoRecognizer(infoRecognizerInterface):
 
     #initializes with OCR text as input
-    def __init__(self, text):
+    def __init__(self, text, impath):
         self.text = text
+        self.input = impath
         d = dirname(dirname(abspath(__file__)))
         file = os.path.join(d, "publishers.txt")
         self.datasetFile = file
@@ -52,20 +55,21 @@ class infoRecognizer(infoRecognizerInterface):
     #named entity recognition for identifying publisher and author names
     def ner(self):
 
-        publisher = []
-        authors = []
+        publisher = set()
+        authors = set()
 
         nlp = spacy.load("en_core_web_trf") #model used for named entity recognition
         for box in self.text:
             sentence = box[1]
             doc = nlp(sentence)
+
             for ent in doc.ents:
                 #print(ent.text, ent.start_char, ent.end_char, ent.label_)
 
                 #assumes that publisher name will be identified as an organization with label ORG
                 if ent.label_ == 'ORG':
-                    print("publishere here", ent.text)
-                    publisher.append(ent.text)
+                    #print("publisher here", ent.text)
+                    publisher.add(ent.text)
                 
                 elif ent.label_ == 'PERSON':
                     #if text label is "PERSON", it is assumed to be either the author name or publisher name
@@ -76,7 +80,7 @@ class infoRecognizer(infoRecognizerInterface):
                     for line in lines:
                         #if fuzzy matching score is more than 80
                         if fuzz.ratio(ent.text.lower(), line.lower()) >= 80:
-                            publisher.append(line[:-1])
+                            publisher.add(line[:-1])
                             ent.label_ = "ORG"
                             match = True
                             #print("matched with", line)
@@ -84,8 +88,28 @@ class infoRecognizer(infoRecognizerInterface):
                     
                     #no match found so person is taken to be an author
                     if match is False:
-                        authors.append(ent.text)
-        return [str(authors), str(publisher)]
+                        authors.add(ent.text)
+        return [authors, publisher]
+
+    #function for fuzzy searching additional strings in the publisher dataset
+    def getPublisher(self):
+        publisher = set()
+        for box in self.text:
+            match = False
+            dataset = open(self.datasetFile, 'r')
+            lines = dataset.readlines()
+            for line in lines:
+                #if fuzzy matching score is more than 80
+                if fuzz.ratio(box[1].lower(), line.lower()) >= 80:
+                    publisher.add(line[:-1])
+                    match = True
+                    #print("matched with", line)
+                    break   #assuming that there is one publisher for a single edition image
+            if match is True:
+                break
+        return publisher
+
+
 
 
     #get ISBN number using ISBN keyword search
@@ -98,9 +122,27 @@ class infoRecognizer(infoRecognizerInterface):
                 isbn = sentence[isbn_match+5:]  #get the number displayed after the dtring 'isbn'
         return isbn
 
+    def getISBNfromBarcode(self):
+        isbn = None
+        print("Trying ISBN from barcode...")
+        img = cv2.imread(self.input)
+        detectedBarcodes = decode(img)
+        if not detectedBarcodes:
+            print("No Barcode detected")
+        else:
+            for barcode in detectedBarcodes:              
+                if barcode.data!="":
+                    return barcode.data
+        return isbn
+        
+
     def recognize(self):
         title = self.getTitle()
         isbn = self.getISBN()
+        if isbn is None:
+            isbn = self.getISBNfromBarcode()
         ner_output = self.ner()
         authors, publisher = ner_output[0], ner_output[1]
-        return [title, isbn, authors, publisher]
+        addPublisher = self.getPublisher()
+        publishers = publisher.union(addPublisher)
+        return [title, isbn, str(list(authors)), str(list(publishers))]

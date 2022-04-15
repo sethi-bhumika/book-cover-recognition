@@ -1,6 +1,3 @@
-# import spacy
-# from fuzzywuzzy import fuzz
-# from fuzzywuzzy import process
 from utils.textExtractor import textExtractor
 from utils.argParser import argParser
 from utils.writer import excelWriter
@@ -31,11 +28,13 @@ def main():
     #nlp = spacy.load("en_core_web_trf") #used for named entity recognition
     for input in files:
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        
         try:
             fileType = validator.checkFileType(input)
-            print(fileType)
+            #print(fileType)
             if fileType[0]:   #if image type
-                print("image")
+                #print("image")
+                pass
             else:       #if input not of image type
                 converter = inputConverter(fileType[1], input)
                 converter.convert()
@@ -46,7 +45,7 @@ def main():
             print("Text extraction through OCR complete")
 
             #recognize and extract information
-            recognizer = infoRecognizer(ocr_output)
+            recognizer = infoRecognizer(ocr_output, input)
             book_entry = recognizer.recognize() #returns a list currently, do json object in future!!!
             print("Book information recognized: ", book_entry)
 
