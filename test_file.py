@@ -1,3 +1,4 @@
+from ast import Assert
 from utils.textExtractor import textExtractor
 from utils.argParser import argParser
 from utils.writer import excelWriter
@@ -62,9 +63,11 @@ def test_main(path):
 
 def test_dir():
     data = test_main("./test_dir")
+    assert len(data) == 3
     
 def test_single_file():
-    test_main("./sample.jpeg")
+    data = test_main("./sample.jpeg")
+    assert data[0][3] == "['Prentice Hall']"
 
 def test_file_validator():
     path = "./not_a_path"
@@ -73,4 +76,21 @@ def test_file_validator():
         type = validator.checkPathType(path)
     except Exception:
         assert True
+
+def test_input_converter():
+    input = "./README.md"
+    validator = fileValidator()
+    fileType = validator.checkFileType(input)
+    converter = inputConverter(fileType[1], input)
+    try:
+        converter.convert()
+    except Exception:
+        assert True
+
+def test_another_single_file():
+    data = test_main("./sample1.jpeg")
+    assert data[0][1] == "978-0-618-26030-0"
+    
+
+
 

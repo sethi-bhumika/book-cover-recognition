@@ -30,11 +30,12 @@ SOLID and DRY principles were kept in mind while designing the modules and the s
 - 2. Interface Segragation Principles: Coding to the interface has been extensibly used through the usage of abstract classes and methods and segregation is achieved by splitting into multiple independent parts.
 - 3. Dependency Inversion Principle: In conjunction to increasing the scope of the application to pdf, epub files etc, an abstract inputConverter(converts specified format to image) has been created. The main function depends on this abstraction instead of individual converter functions for various filetypes(e.g. inputConverterPDF, inputConverterHTML etc.)
 - 4. Open/Closed Principle: An example is the infoRecognizer class. It has the recognize function, which has no need to change to add for example, new features. The descendant class can have any additional methods. Thus it is close to modification but open to extension.
-- 5. Liskov Substitution Principle: The custom exception class is inherited by the specific exception classes like pathException, fileTypeException etc., which can easily be replaced instead of the parent custom class.
+- 5. Liskov Substitution Principle: The custom exception class is inherited by the specific exception classes like pathException, fileTypeException etc., which can easily be replaced instead of the parent custom exception class.
 
 
 3. To compile:
 Create a virtual env to install the dependencies, example commands to do so are as follows:
+```
 $ python3 -m venv venv
 $ source venv/bin/activate
 $ pip install -r requirements.txt
@@ -45,6 +46,9 @@ $ coverage report
 
 For running the program: (usage)
 $ python main.py [-h|--help] -p|--path <file or directory path>
+```
+Note: 
+There are warnings displayed about lack of CUDA in the absence of GPU. Further, the NLP performance might take some time on certain inputs due to the usage of GPU transform models on a CPU device.
 
 4. Directory Structure:
 
@@ -87,5 +91,5 @@ $ python main.py [-h|--help] -p|--path <file or directory path>
 ![sample input image](./sample.jpeg "Input Image")
 ![excel output](./mdImages/xloutput.png "Writes output in .xlsx format")
 ![terminal output](./mdImages/terminaloutput.png "Terminal")
-![test coverage 96%](./mdImages/terminaloutput.png "Overall test coverage")
+![test coverage 96%](./mdImages/testcoverage.png "Overall test coverage")
 
