@@ -34,6 +34,7 @@ class excelWriter(writerInterface):
     def write(self, data):
         row, column = 1, 0
         for entry in data:
+            column = 0
             for field in entry:     #iterate over all the fields in a single row
                 self.worksheet.write(row, column, field)
                 column += 1
