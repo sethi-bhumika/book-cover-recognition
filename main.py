@@ -8,7 +8,8 @@ from utils.textExtractor import textExtractor
 from utils.argParser import argParser
 from utils.writer import excelWriter
 from utils.fileValidator import fileValidator
-import magic
+from utils.inputConverter import inputConverter
+
 
 
 def main():
@@ -20,10 +21,27 @@ def main():
     #check file/directory validity
     validator = fileValidator()
     type = validator.checkFileType(args.path)
-    mime = magic.Magic(mime=True)
-    print(mime.from_file(args.path))
 
-    #convert to image
+    #if path is of a directory
+    files = []
+    if type == "dir":
+        files = validator.getFilesfromDirectory(args.path)
+    else:   #if single file
+        files.append(args.path)
+
+    for input in files:
+        try:
+            fileType = validator.checkFileType(input)
+            print(fileType)
+            if fileType[0]:   #if image type
+                print("image")
+                #do information extraction
+            else:
+                converter = inputConverter(fileType[1], input)
+                converter.convert()
+        except Exception as e:
+            print(e)
+            continue
 
     #get text info
     image_path = args.path

@@ -15,3 +15,11 @@ class pathException(customException):
 
     def __str__(self):
         return super().__str__()
+
+class fileTypeException(customException):
+
+    def __init__(self, value):
+        super().__init__(value)
+
+    def __str__(self):
+        return super().__str__()
