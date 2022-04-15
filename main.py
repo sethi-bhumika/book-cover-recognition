@@ -8,6 +8,7 @@ from utils.textExtractor import textExtractor
 from utils.argParser import argParser
 from utils.writer import excelWriter
 from utils.fileValidator import fileValidator
+import magic
 
 
 def main():
@@ -19,6 +20,8 @@ def main():
     #check file/directory validity
     validator = fileValidator()
     type = validator.checkFileType(args.path)
+    mime = magic.Magic(mime=True)
+    print(mime.from_file(args.path))
 
     #convert to image
 
@@ -54,15 +57,16 @@ def main():
         for ent in doc.ents:
             print(ent.text, ent.start_char, ent.end_char, ent.label_)
             if ent.label_ == "PERSON":
-                #fuzzy search in publisher list
+                #fuzzy search in publisher list #do this for all strings??
                 match = False
                 file1 = open('publishers.txt', 'r')
                 lines = file1.readlines()
                 for line in lines:
-                    if fuzz.partial_ratio(ent.text, line) >= 90:
+                    if fuzz.ratio(ent.text.lower(), line.lower()) >= 80:
                         publisher.append(ent.text)
                         ent.label_ = "ORG"
                         match = True
+                        print("matched with", line)
                         break
                     
                 #else
@@ -84,10 +88,12 @@ def main():
     for box in ocr_output:
         x = box[0][1][0]-box[0][0][0]
         y = box[0][2][1]-box[0][1][1]
-        area = max(area, x*y)
+        if len(box[1]) <= 100:   #assumes that there are atmost 100 characters in the title
+            area = max(area, x*y)
+            if x*y == area:
+                title = box[1]
         #area = max(area, y)
-        if x*y == area:
-            title = box[1]
+        
     #check for summary bounding box!!!
 
     print("~~~~~~~~~~~~~~Info extracted~~~~~~~~~~~~~~~")

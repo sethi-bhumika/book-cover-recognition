@@ -8,6 +8,7 @@ class fileValidatorInterface(ABC):
     def checkFileType(self, path):
         pass
 
+#validates the path and informs if it is a file or a directory
 class fileValidator(fileValidatorInterface):
 
     def __init__(self):
