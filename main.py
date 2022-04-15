@@ -7,15 +7,18 @@ from fuzzywuzzy import process
 from utils.textExtractor import textExtractor
 from utils.argParser import argParser
 from utils.writer import excelWriter
+from utils.fileValidator import fileValidator
 
 
 def main():
     
     #parse cli arguments
-    parser = argParser()    #add language as flag!!!!
+    parser = argParser()    #add language as flag!!!! or bounding box viewer
     args = parser.parse()
 
     #check file/directory validity
+    validator = fileValidator()
+    type = validator.checkFileType(args.path)
 
     #convert to image
 
