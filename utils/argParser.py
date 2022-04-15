@@ -3,7 +3,6 @@ import argparse
 
 class argParserInterface(ABC):
 
-    # self.parser = argparse.ArgumentParser()
 
     @abstractmethod
     def parse(self):

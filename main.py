@@ -6,6 +6,7 @@ from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 from utils.textExtractor import textExtractor
 from utils.argParser import argParser
+from utils.writer import excelWriter
 
 
 def main():
@@ -26,6 +27,8 @@ def main():
 
     #entity recognition -- put all the following functions in a separate class+interface
     nlp = spacy.load("en_core_web_trf")
+    data = []
+    entry = []
     authors = []
     publisher = []
     isbn = ""
@@ -87,18 +90,28 @@ def main():
     print("~~~~~~~~~~~~~~Info extracted~~~~~~~~~~~~~~~")
 
     print("title:", title)
+    entry.append(title)
 
 
     #recognize ISBN number if present
     print("isbn:", isbn)
+    entry.append(isbn)
 
     #recognize author(s)
     print("author(s):", authors)
+    entry.append(str(authors))
 
     #recognize publisher
     print("publisher:", publisher)
+    entry.append(str(publisher))
+
+    data.append(entry)
 
     #add in excel sheet
+    writer = excelWriter("Books_Info.xlsx")
+    writer.writeHeaders(['Title', 'ISBN', 'Author(s)', 'Publisher'])
+    writer.write(data)
+    writer.close()
 
 
 if __name__ == "__main__":
