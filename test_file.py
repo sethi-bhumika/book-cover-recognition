@@ -63,7 +63,7 @@ def test_dir():
     test_main("./test_dir")
     
 def test_single_file():
-    test_main("./cover.jpeg")
+    test_main("./sample.jpeg")
 
 def test_file_validator():
     path = "./not_a_path"

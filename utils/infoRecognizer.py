@@ -132,7 +132,7 @@ class infoRecognizer(infoRecognizerInterface):
         else:
             for barcode in detectedBarcodes:              
                 if barcode.data!="":
-                    return barcode.data
+                    return str(barcode.data)[2:-1]
         return isbn
         
 
