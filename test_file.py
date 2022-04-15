@@ -58,9 +58,10 @@ def test_main(path):
     writer.writeHeaders(['Title', 'ISBN', 'Author(s)', 'Publisher'])
     writer.write(data)
     writer.close()
+    return data
 
 def test_dir():
-    test_main("./test_dir")
+    data = test_main("./test_dir")
     
 def test_single_file():
     test_main("./sample.jpeg")

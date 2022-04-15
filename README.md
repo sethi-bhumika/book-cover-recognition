@@ -26,11 +26,11 @@ Secondly, in cases where only ISBN Barcode is present or the keyword could not b
 
 SOLID coding practices:
 SOLID and DRY principles were kept in mind while designing the modules and the structure of the program.
-1. Single Responsibility Principle: By limiting the functionality of the classes to singular responsibility.
-2. Interface Segragation Principles: Coding to the interface has been extensibly used through the usage of abstract classes and methods and segregation is achieved by splitting into multiple independent parts.
-3. Dependency Inversion Principle: In conjunction to increasing the scope of the application to pdf, epub files etc, an abstract inputConverter(converts specified format to image) has been created. The main function depends on this abstraction instead of individual converter functions for various filetypes(e.g. inputConverterPDF, inputConverterHTML etc.)
-4. Open/Closed Principle: An example is the infoRecognizer class. It has the recognize function, which has no need to change to add for example, new features. The descendant class can have any additional methods. Thus it is close to modification but open to extension.
-5. Liskov Substitution Principle: The custom exception class is inherited by the specific exception classes like pathException, fileTypeException etc., which can easily be replaced instead of the parent custom class.
+- 1. Single Responsibility Principle: By limiting the functionality of the classes to singular responsibility.
+- 2. Interface Segragation Principles: Coding to the interface has been extensibly used through the usage of abstract classes and methods and segregation is achieved by splitting into multiple independent parts.
+- 3. Dependency Inversion Principle: In conjunction to increasing the scope of the application to pdf, epub files etc, an abstract inputConverter(converts specified format to image) has been created. The main function depends on this abstraction instead of individual converter functions for various filetypes(e.g. inputConverterPDF, inputConverterHTML etc.)
+- 4. Open/Closed Principle: An example is the infoRecognizer class. It has the recognize function, which has no need to change to add for example, new features. The descendant class can have any additional methods. Thus it is close to modification but open to extension.
+- 5. Liskov Substitution Principle: The custom exception class is inherited by the specific exception classes like pathException, fileTypeException etc., which can easily be replaced instead of the parent custom class.
 
 
 3. To compile:
@@ -48,10 +48,44 @@ $ python main.py [-h|--help] -p|--path <file or directory path>
 
 4. Directory Structure:
 
+```.
+├── Books_Info.xlsx
+├── images
+│   ├── 1000splendidsuns.jpg
+│   ├── barcode.jpeg
+│   ├── cleancode1.jpeg
+│   └── ex.jpeg
+├── main.py
+├── mdImages
+│   ├── terminaloutput.png
+│   ├── testcoverage.png
+│   └── xloutput.png
+├── publishers.txt
+├── pytest.ini
+├── README.md
+├── requirements.txt
+├── sample1.jpeg
+├── sample.jpeg
+├── test_dir
+│   ├── eng.txt
+│   ├── sample1.jpeg
+│   ├── sample2.jpeg
+│   └── sample3.jpeg
+├── test_file.py
+└── utils
+    ├── argParser.py
+    ├── exception.py
+    ├── fileValidator.py
+    ├── infoRecognizer.py
+    ├── inputConverter.py
+    ├── textExtractor.py
+    └── writer.py
+```
+
 
 5. Screenshots:
 ![sample input image](./sample.jpeg "Input Image")
-![excel output](./mdImages/xloutput "Writes output in .xlsx format")
-![terminal output](./mdImages/terminaloutput "Terminal")
-![test coverage 96%](./mdImages/terminaloutput "Overall test coverage")
+![excel output](./mdImages/xloutput.png "Writes output in .xlsx format")
+![terminal output](./mdImages/terminaloutput.png "Terminal")
+![test coverage 96%](./mdImages/terminaloutput.png "Overall test coverage")
 
