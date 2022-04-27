@@ -1,7 +1,5 @@
 # book-cover-recognition
 
-===============================================
-
 1. What does the program do?
 
 The application is an implementation of a command line tool which recognizes and extracts metadata from book cover images. The path to a file or a directory is given as the -p or --path flag through the CLI, and the extracted fields, which include Title, Author names, ISBN number and Publisher Name, are written in an Excel workbook of the .xlsx format.
