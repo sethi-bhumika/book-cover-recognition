@@ -1,8 +1,5 @@
 # book-cover-recognition
 
-Submitter Name: Bhumika
-Roll No: 2019CSB1152
-Course: CS305
 ===============================================
 
 1. What does the program do?
